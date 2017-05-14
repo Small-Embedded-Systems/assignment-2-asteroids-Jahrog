@@ -1,7 +1,6 @@
-/* Asteroids
-    Sample solution for assignment
-    Semester 2 -- Small Embedded Systems
-    Dr Alun Moon
+/* 
+    Jacob Roling
+	w14038815
 */
 
 /* C libraries */
@@ -10,61 +9,75 @@
 #include <stdbool.h>
 #include <math.h>
 #include <string.h>
-
-/* hardware platform libraries */
 #include <display.h>
 #include <mbed.h>
-
-/* Main game elements */
 #include "model.h"
 #include "view.h"
 #include "controller.h"
 
-/* Game state */
-float elapsed_time; 
-int   score;
-int   lives;
-struct ship player;
+/* Global Variables */
+//elapsed time in the game
+float e_time; 
+//current currentscore which the user has
+int   currentscore = 0; 
+//current amount of lifesleft the user has
+int   lifesleft = 5; 
+//current level of shield the user has
+int shield = 3; 
+//
+struct ship player; 
+//if state of game is active or not
+bool paused = true; 
 
+/* Speed of game */
 float Dt = 0.01f;
 
+/* Ticker objects to manage physics, graphics and input */
 Ticker model, view, controller;
 
-bool paused = true;
-/* The single user button needs to have the PullUp resistor enabled */
-DigitalIn userbutton(P2_10,PullUp);
+/* Local Method Declarations*/
+static void end();
+
+/* jstick centre used to start game */
+DigitalIn startbutton(P5_3,PullUp);
+
+/* Main */
 int main()
 {
-
     init_DBuffer();
     
-
     view.attach( draw, 0.025);
     model.attach( physics, Dt);
-    controller.attach( controls, 0.1);
+    controller.attach( controls, 0.025);
     
-    lives = 5;
-    
-    /* Pause to start */
-    while( userbutton.read() ){ /* remember 1 is not pressed */
+    /* game start */
+    while( startbutton.read() ){
         paused=true;
-        wait_ms(100);
     }
-    paused = false;
-    
+		paused = false;
+		
+		/* Main Loop */
     while(true) {
-        /* do one of */
-        /* Wait until all lives have been used
-        while(lives>0){
-            // possibly do something game related here
-            wait_ms(200);
-        }
-        */
-        /* Wait until each life is lost
-        while( inPlay ){
-            // possibly do something game related here
-            wait_ms(200);
-        }
-        */
+			//If shields are less then 1 call end()
+			if(shield < 1) {
+				end(); //end method
+			}
+			//If the player runs out of lifesleft reset the game when play is resumed
+			if(lifesleft < 0) {
+				lifesleft = 5; //lifesleft back to default
+				currentscore = 0; //currentscore reset to zero
+				e_time = 0; //elapsed time reset
+			}
     }
+}
+
+/* Called when the player crashes the ship. 
+	 Pauses the game, resets shields and takes away a life.  */
+static void end() {
+	lifesleft --;
+	while( startbutton.read() ){
+        paused=true;
+    }
+	shield = 3;
+	paused = false;
 }
