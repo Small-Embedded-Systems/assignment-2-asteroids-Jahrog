@@ -1,12 +1,15 @@
+/* 
+    Jacob Roling
+	w14038815
+*/
+
 /* Game state */
 
-extern float elapsed_time; /* time this ship has been active */
-extern int   score;        /* total score so far */
-extern int   lives;        /* lives remaining */
+extern float e_time; /* played time */
+extern int   currentscore;        /* currentscore */
+extern int   lifesleft;        /* lifesleft */
+extern int shield;				 /* shield*/
+extern bool paused;				 /* pauses */
+extern struct ship player; /* position */
 
-extern struct ship player;
-
-extern struct rock *asteroids; /* array of rocks / pointer to linked-list */
-extern struct missile *shots;  /* array of missiles / pointer to linked-list */
-
-extern const float Dt; /* Time step for physics, needed for consistent motion */
+extern const float Dt; /* needed for motion */

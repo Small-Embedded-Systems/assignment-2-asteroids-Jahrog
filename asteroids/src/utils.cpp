@@ -1,3 +1,9 @@
+/* 
+    Jacob Roling
+	w14038815
+*/
+
+
 /* utility functions */
 #include <stdint.h>
 #include <stdlib.h>
@@ -29,7 +35,7 @@ int randrange(int from, int to)
     return from + rand()%range;
 }
 
-/* Convery degrees to radians */
+/* Convert degrees to radians */
 const float pi = 3.1415926f;
 float radians(float degrees) { return degrees/180*pi; }
-
+float degrees(float radians) { return radians * (180 / pi); }
